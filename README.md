@@ -1,29 +1,48 @@
-# whistle.mockall
+# whistle.devtool
 
 ## 安装
 ```js
-npm i -g whistle.mockall
+npm i -g whistle.devtool
 ```
 
 ## 使用
+
+**第一步：`把不代理地址删除`，一定要要把 whistle 站点代理上，这一点很重要！！！**
+
+![17165274650391716527464167.png](https://fastly.jsdelivr.net/gh/fyhhub/imgs@main/17165274650391716527464167.png)
+
+
+然后**切换到whistle代理**
+
+**第二步：配置域名规则**
 ```
-* whistle.mockall://
+# 将流量走到插件里
+juejin.cn whistle.devtool://
+# 去掉缓存，防止sdk无法注入
+juejin.cn disable://cache
 ```
 
-### Request、Response
 
-![16907864532541690786452823.png](https://fastly.jsdelivr.net/gh/fyhhub/imgs@main/16907864532541690786452823.png)
-
+**第三步：手机连接代理**
 
 
-### Response Delay、Status Code
-必须传入数字
+**第四步：开始调试**
 
-### Sourcemap Mapping
-你需要传入json格式：
+1. F12打开控制台, 用于查看log
+2. 打开Inspectors下的Preview, 用于查看预览
 
-```
-{
-  "assets/xxx.js": "远程sourcemap地址"
-}
-```
+
+
+![17165280890611716528088391.png](https://fastly.jsdelivr.net/gh/fyhhub/imgs@main/17165280890611716528088391.png)
+
+
+
+
+
+
+
+## 远程执行命令
+
+直接在whistle的控制台输入`ev('alert(1)')` 即可执行js脚本
+
+![17165282920611716528291346.png](https://fastly.jsdelivr.net/gh/fyhhub/imgs@main/17165282920611716528291346.png)

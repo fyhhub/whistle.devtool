@@ -35,18 +35,28 @@ export default (server: Whistle.PluginServer, options: Whistle.PluginOptions) =>
   }));
   const wss = new WebSocket.Server({ server });
   const clients = new Map();
+  const sdks = new Map();
   wss.on('connection', (ws: any, request) => {
     // 存储客户端ws
     const parameters = url.parse(request.url, true).query;
     const id = uuidv4();
-    if (parameters.from !== 'sdk') {
+    const isSDK = parameters.from === 'sdk';
+    if (!isSDK) {
       clients.set(id, ws);
+    } else {
+      sdks.set(id, ws)
     }
     console.log('Client connected');
     // 接收sdk发来的消息
     ws.on('message', (message: string) => {
-      for (const [_id, _ws] of clients) {
-        _ws.send(message);
+      if (isSDK) {
+        for (const [_id, _ws] of clients) {
+          _ws.send(message);
+        }
+      } else {
+        for (const [_id, _ws] of sdks) {
+          _ws.send(message);
+        }
       }
     });
     ws.on('close', () => {

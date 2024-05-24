@@ -38,16 +38,28 @@ exports.default = (server, options) => {
     }));
     const wss = new ws_1.default.Server({ server });
     const clients = new Map();
+    const sdks = new Map();
     wss.on('connection', (ws, request) => {
         const parameters = url_1.default.parse(request.url, true).query;
         const id = (0, uuid_1.v4)();
-        if (parameters.from !== 'sdk') {
+        const isSDK = parameters.from === 'sdk';
+        if (!isSDK) {
             clients.set(id, ws);
+        }
+        else {
+            sdks.set(id, ws);
         }
         console.log('Client connected');
         ws.on('message', (message) => {
-            for (const [_id, _ws] of clients) {
-                _ws.send(message);
+            if (isSDK) {
+                for (const [_id, _ws] of clients) {
+                    _ws.send(message);
+                }
+            }
+            else {
+                for (const [_id, _ws] of sdks) {
+                    _ws.send(message);
+                }
             }
         });
         ws.on('close', () => {

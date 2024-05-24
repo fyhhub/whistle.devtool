@@ -1,3 +1,18 @@
+function blobToString(blob: Blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = (error) => {
+      reject(error);
+    };
+
+    reader.readAsText(blob);
+  });
+}
 function reriteConsole(cb) {
   if (window.__whistleRewriteConsole) return;
   const methods = ['log', 'warn', 'error', 'info'];
@@ -33,6 +48,19 @@ ws.onclose = () => {
   console.log('Disconnected from server');
 };
 
+ws.onmessage = (message) => {
+  const { data } = message;
+  blobToString(data).then((res: any) => {
+    res = JSON.parse(res);
+    if (res.type === 'eval') {
+      const fn = new Function('return ' + res.content);
+      ws.send(JSON.stringify({
+        type: 'eval',
+        content: fn()
+      }))
+    }
+  })
+}
 reriteConsole((method, args) => {
   if (ws.readyState === ws.OPEN) {
     ws.send(JSON.stringify({
