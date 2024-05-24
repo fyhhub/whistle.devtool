@@ -2,7 +2,7 @@
   "name": "whistle.devtool",
   "version": "0.0.2",
   "description": "Mock All",
-  "homepage": "https://github.com/fyhhub/whistle.mockall",
+  "homepage": "https://github.com/fyhhub/whistle.devtool",
   "license": "MIT",
   "scripts": {
     "dev:web": "rsbuild build --watch --config ./client/rsbuild.config.ts",
