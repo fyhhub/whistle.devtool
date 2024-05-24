@@ -32,7 +32,7 @@ ws.onmessage = async function(message) {
   if (res.type === 'html') {
     document.body.innerHTML = `
 <div id="whistle-devtool-preview">
-<input id="whistle-devtool-preview__path"/>
+<meta name="referrer" content="never">
 ${res.content}
 </div>
     `;
