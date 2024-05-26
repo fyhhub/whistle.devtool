@@ -1,6 +1,6 @@
 {
   "name": "whistle.devtool",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "让whistle调试功能更加强大的插件",
   "homepage": "https://github.com/fyhhub/whistle.devtool",
   "license": "MIT",
