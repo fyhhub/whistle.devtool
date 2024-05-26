@@ -1,0 +1,62 @@
+<script>
+function formatDateTime(date) {
+  function padZero(value) {
+    return value.length === 1 ? '0' + value : value;
+  }
+  const year = date.getFullYear();
+  const month = padZero(date.getMonth() + 1); // 月份是从0开始的
+  const day = padZero(date.getDate());
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  const seconds = padZero(date.getSeconds());
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+var w2 = window.whistleBridge;
+if (w2) {
+  var showModal = w2.showModal;
+  var MAX_LEN = 100;
+  w2.addNetworkListener(function(options) {
+    const requestRecords = w2.createRequest({
+      url: 'whistle.devtool/cgi-bin/shared/get',
+      type: "get",
+      mode: "cancel",
+    })
+    requestRecords({}, function(res) {
+      const records = res.data;
+      const body = []
+      for (var key in records) {
+        body.push(`<div style="margin-bottom: 4px;border-bottom: 1px solid #ddd;display: flex;justify-content: space-between">
+            <span style="white-space: nowrap;">${records[key].shareDate}</span>
+            <a href="/plugin.devtool/index.html?shareId=${key}" target="_blank">${records[key].url}</a>
+            <span style="white-space: nowrap;cursor: pointer" onclick="deleteShare" data-v-shareid=${JSON.stringify(key)}>删除</span>
+          </div><br/>`)
+      }
+      var hideModal = showModal({
+        width: 800,
+        title: 'Share',
+        body: body.join('\n'),
+        footer: [
+        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>',
+        ].join('\n'),
+        onShow: function(dialog) {
+        },
+        methods: {
+          deleteShare(e) {
+            const request = w2.createRequest({
+              url: 'whistle.devtool/cgi-bin/shared/delete',
+              type: "post",
+              mode: "cancel",
+            })
+            request({
+              id: e.target.dataset.vShareid
+            }, function() {
+              hideModal();
+              w2.updateUI();
+            })
+          }
+        }
+      });
+    })
+  });
+}
+</script>

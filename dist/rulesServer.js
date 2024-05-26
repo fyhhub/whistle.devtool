@@ -13,10 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const koa_1 = __importDefault(require("koa"));
-const PLUGIN_NAME = 'whistle.mockall';
 exports.default = (server, options) => {
     const app = new koa_1.default();
-    const storage = options.storage;
     app.use((ctx) => __awaiter(void 0, void 0, void 0, function* () {
     }));
     server.on('request', app.callback());

@@ -46,3 +46,5 @@ juejin.cn disable://cache
 直接在whistle的控制台输入`ev('alert(1)')` 即可执行js脚本
 
 ![17165282920611716528291346.png](https://fastly.jsdelivr.net/gh/fyhhub/imgs@main/17165282920611716528291346.png)
+
+## 分享抓包内容

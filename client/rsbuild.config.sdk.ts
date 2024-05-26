@@ -1,5 +1,4 @@
 import { defineConfig } from '@rsbuild/core';
-import { pluginReact } from '@rsbuild/plugin-react';
 import path from 'path';
 import fs from 'fs';
 const rsbuildPlugin = () => ({

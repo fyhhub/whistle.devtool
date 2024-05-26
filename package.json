@@ -19,9 +19,11 @@
     "sdk-dist",
     "index.js",
     "_rules.txt",
-    "_values.txt"
+    "_values.txt",
+    "public"
   ],
   "devDependencies": {
+    "@babel/runtime": "^7.24.6",
     "@rsbuild/core": "^0.6.15",
     "@rsbuild/plugin-react": "^0.6.15",
     "@types/koa": "^2.13.4",
@@ -43,10 +45,25 @@
       "priority": 1,
       "page": "client-dist/index.html",
       "name": "Preview"
-    }
+    },
+    "networkMenus": [
+      {
+        "name": "Shared",
+        "page": "public/shared.html",
+        "requiredTreeNode": true
+      },
+      {
+        "name": "Shared记录",
+        "page": "public/shared-record.html",
+        "requiredTreeNode": true
+      }
+    ]
   },
   "dependencies": {
     "@koa/cors": "^5.0.0",
+    "@uiw/react-json-view": "2.0.0-alpha.24",
+    "antd": "^5.17.3",
+    "js-base64": "^3.7.7",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-onerror": "^4.1.0",

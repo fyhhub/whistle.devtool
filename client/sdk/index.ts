@@ -58,6 +58,25 @@ ws.onmessage = (message) => {
         type: 'eval',
         content: fn()
       }))
+    } else if (res.type === 'html') {
+      ws.send(JSON.stringify({
+        type: 'html',
+        tag: 'html',
+        content: document.documentElement.outerHTML
+      }))
+      ws.send(JSON.stringify({
+        type: 'view-wh',
+        content: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        }
+      }))
+    } else if (res.type === 'click') {
+      const { x, y } = res.content;
+      const targetDom: any = document.elementFromPoint(x, y);
+      targetDom && targetDom.click();
+    } else if (res.type === 'scrollY') {
+      window.scrollTo(0, res.content);
     }
   })
 }
@@ -77,23 +96,45 @@ let html = ''
 const updateHtml = debounce(() => {
   ws.send(JSON.stringify({
     type: 'html',
+    tag: 'html',
     content: html
   }))
-}, 300)
+}, 1000)
 const mutationObserver = new MutationObserver((mutations, observer) => {
   html = document.documentElement.outerHTML
   updateHtml();
 });
-window.addEventListener('load', () => {
-  if (ws.readyState === ws.OPEN) {
-    ws.send(JSON.stringify({
-      type: 'html',
-      content: document.documentElement.outerHTML
-    }))
-  }
-  mutationObserver.observe(document.body, {
-    childList: true, // 观察目标子节点的变化，是否有添加或者删除
-    attributes: true, // 观察属性变动
-    subtree: true, // 观察后代节点，默认为 false
+
+if (ws.readyState === ws.OPEN) {
+  ws.send(JSON.stringify({
+    type: 'html',
+    tag: 'html',
+    content: document.documentElement.outerHTML
+  }))
+  ws.send(JSON.stringify({
+    type: 'view-wh',
+    content: {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+  }))
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  ws.send(JSON.stringify({
+    type: 'view-wh',
+    content: {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+  }))
+  setTimeout(() => {
+    mutationObserver.observe(document.body, {
+      childList: true, // 观察目标子节点的变化，是否有添加或者删除
+      attributes: true, // 观察属性变动
+      subtree: true, // 观察后代节点，默认为 false
+    })
   })
 })
