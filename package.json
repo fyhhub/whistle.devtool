@@ -48,12 +48,12 @@
     },
     "networkMenus": [
       {
-        "name": "Shared",
+        "name": "分享",
         "page": "public/shared.html",
         "requiredTreeNode": true
       },
       {
-        "name": "Shared记录",
+        "name": "分享记录",
         "page": "public/shared-record.html",
         "requiredTreeNode": true
       }
