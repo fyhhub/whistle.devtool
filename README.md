@@ -30,6 +30,7 @@ juejin.cn disable://cache
 
 1. F12打开控制台, 用于查看log
 2. 打开Inspectors下的Preview, 用于查看预览
+3. 用手机打开页面
 
 
 
@@ -48,3 +49,6 @@ juejin.cn disable://cache
 ![17165282920611716528291346.png](https://fastly.jsdelivr.net/gh/fyhhub/imgs@main/17165282920611716528291346.png)
 
 ## 分享抓包内容
+![BE20240526221329.png](https://raw.githubusercontent.com/fyhhub/imgs/main/QQ%E6%88%AA%E5%9B%BE20240526221329.png)
+
+![BE20240526221216.png](https://raw.githubusercontent.com/fyhhub/imgs/main/QQ%E6%88%AA%E5%9B%BE20240526221216.png)

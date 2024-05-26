@@ -1,3 +1,4 @@
+const win = window as any;
 function blobToString(blob: Blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -14,7 +15,7 @@ function blobToString(blob: Blob) {
   });
 }
 function reriteConsole(cb) {
-  if (window.__whistleRewriteConsole) return;
+  if (win.__whistleRewriteConsole) return;
   const methods = ['log', 'warn', 'error', 'info'];
   methods.forEach(function(method) {
     const originFn = window.console[method];
@@ -23,7 +24,7 @@ function reriteConsole(cb) {
       originFn.apply(window.console, [].slice.call(arguments));
     }
   });
-  window.__whistleRewriteConsole = true;
+  win.__whistleRewriteConsole = true;
 }
 
 function debounce(fn, wait) {
@@ -38,8 +39,9 @@ function debounce(fn, wait) {
   };
 }
 
-const ws = new WebSocket('wss://local.whistlejs.com/whistle.devtool?from=sdk');
 
+// websocket相关
+const ws = new WebSocket('wss://local.whistlejs.com/whistle.devtool?from=sdk');
 ws.onopen = () => {
   console.log('Connected to server');
 };
@@ -47,7 +49,6 @@ ws.onopen = () => {
 ws.onclose = () => {
   console.log('Disconnected from server');
 };
-
 ws.onmessage = (message) => {
   const { data } = message;
   blobToString(data).then((res: any) => {
@@ -71,15 +72,12 @@ ws.onmessage = (message) => {
           height: window.innerHeight
         }
       }))
-    } else if (res.type === 'click') {
-      const { x, y } = res.content;
-      const targetDom: any = document.elementFromPoint(x, y);
-      targetDom && targetDom.click();
-    } else if (res.type === 'scrollY') {
-      window.scrollTo(0, res.content);
     }
   })
 }
+
+
+// 重写console
 reriteConsole((method, args) => {
   if (ws.readyState === ws.OPEN) {
     ws.send(JSON.stringify({
@@ -89,27 +87,17 @@ reriteConsole((method, args) => {
         args
       }]
     }))
+
   }
 })
-let html = ''
 
+// 页面改变同步html
+let html = ''
 const updateHtml = debounce(() => {
   ws.send(JSON.stringify({
     type: 'html',
-    tag: 'html',
+    tag: 'body',
     content: html
-  }))
-}, 1000)
-const mutationObserver = new MutationObserver((mutations, observer) => {
-  html = document.documentElement.outerHTML
-  updateHtml();
-});
-
-if (ws.readyState === ws.OPEN) {
-  ws.send(JSON.stringify({
-    type: 'html',
-    tag: 'html',
-    content: document.documentElement.outerHTML
   }))
   ws.send(JSON.stringify({
     type: 'view-wh',
@@ -118,10 +106,15 @@ if (ws.readyState === ws.OPEN) {
       height: window.innerHeight
     }
   }))
-}
+}, 300)
+const mutationObserver = new MutationObserver((mutations, observer) => {
+  html = document.documentElement.outerHTML
+  updateHtml();
+});
 
 
 
+// 事件相关同步
 document.addEventListener('DOMContentLoaded', () => {
   ws.send(JSON.stringify({
     type: 'view-wh',
@@ -130,6 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
       height: window.innerHeight
     }
   }))
+  ws.send(JSON.stringify({
+    type: 'html',
+    tag: 'html',
+    content: document.documentElement.outerHTML
+  }))
   setTimeout(() => {
     mutationObserver.observe(document.body, {
       childList: true, // 观察目标子节点的变化，是否有添加或者删除
@@ -137,4 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
       subtree: true, // 观察后代节点，默认为 false
     })
   })
+})
+
+window.addEventListener('scroll', () => {
+  ws.send(JSON.stringify({
+    type: 'scrollY',
+    content: window.scrollY
+  }))
 })

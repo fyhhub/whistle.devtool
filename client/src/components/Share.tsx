@@ -17,6 +17,8 @@ export default function Share() {
         const record = records[shareId!];
         if (record.req.method === 'POST') {
           record.req.body = decode(record.req.base64)
+        }
+        if (record.res.base64) {
           record.res.body = decode(record.res.base64)
         }
         setRecord(record)
