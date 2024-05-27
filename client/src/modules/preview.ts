@@ -2,6 +2,7 @@
 
 const styleSet = new Set();
 const linkSet = new Set()
+let bodyHTML = '';
 function extractCSS(htmlString: string) {
   // 创建一个新的DOMParser实例
   const parser = new DOMParser();
@@ -33,8 +34,11 @@ function extractCSS(htmlString: string) {
       styleSet.add(style.textContent!)
     }
   });
-
-  const body = doc.body;
+  let body;
+  if (bodyHTML !== doc.body.innerHTML) {
+    bodyHTML = doc.body.innerHTML;
+    body = doc.body;
+  }
   return [result, body];
 }
 
@@ -66,6 +70,6 @@ export class PreviewDevTool {
         document.head.appendChild(style)
       }
     })
-    document.body.replaceWith(body);
+    body && document.body.replaceWith(body);
   }
 }
