@@ -34,7 +34,7 @@ function extractCSS(htmlString: string) {
     }
   });
 
-  const body = doc.body.outerHTML;
+  const body = doc.body;
   return [result, body];
 }
 
@@ -62,10 +62,10 @@ export class PreviewDevTool {
         document.head.appendChild(link)
       } else {
         const style = document.createElement('style')
-        style.innerText = item.content;
+        style.innerHTML = item.content;
         document.head.appendChild(style)
       }
     })
-    document.body.outerHTML = body
+    document.body.replaceWith(body);
   }
 }
