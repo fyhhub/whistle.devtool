@@ -34,7 +34,7 @@ export function initSocket() {
     res = JSON.parse(res);
     if (res.type === 'html') {
       previewDevTool.handleMessage(res)
-    } else if (res.type === 'console') {
+    } else if (res.type === 'console' || res.type === 'connected') {
       consoleDevTool.handleMessage(res);
     } else if (res.type === 'eval') {
       evalDevTool.handleMessage(res)

@@ -1,3 +1,4 @@
+import {ElementDevTool} from './element';
 
 
 const styleSet = new Set();
@@ -47,11 +48,16 @@ function extractCSS(htmlString: string) {
 
 
 export class PreviewDevTool {
+  elementDevTool: ElementDevTool;
   constructor(ws: WebSocket) {
+    this.elementDevTool = new ElementDevTool(ws);
     ws.onopen = () => {
       console.log('Connected to server');
       ws.send(JSON.stringify({
         type: 'html',
+      }))
+      ws.send(JSON.stringify({
+        type: 'connected',
       }))
     };
   }
@@ -78,5 +84,9 @@ export class PreviewDevTool {
       }
     })
     body && document.body.replaceWith(body);
+    this.elementDevTool.disconnect();
+    setTimeout(() => {
+      this.elementDevTool.observe();
+    })
   }
 }

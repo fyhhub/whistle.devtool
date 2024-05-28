@@ -37,9 +37,31 @@ function debounce(fn, wait) {
     }, wait);
   };
 }
+
+
+function getNodeByPath(path) {
+  let currentNode: any = document.body;
+  for (let i = 0; i < path.length; i++) {
+      const index = path[i];
+      if (currentNode && currentNode.childNodes[index] !== undefined) {
+          currentNode = currentNode.childNodes[index];
+      } else {
+          return null; // 如果路径无效，返回null
+      }
+  }
+  return currentNode;
+}
+let isMutation = false;
 const ws = new WebSocket('wss://local.whistlejs.com/whistle.devtool?from=sdk');
 ws.onopen = () => {
   console.log('Connected to server');
+  ws.send(JSON.stringify({
+    type: 'connected',
+    content: {
+      url: location.href,
+      ua: navigator.userAgent
+    }
+  }))
 };
 
 ws.onclose = () => {
@@ -68,6 +90,29 @@ ws.onmessage = (message) => {
           height: window.innerHeight
         }
       }))
+    } else if (res.type === 'connected') {
+      ws.send(JSON.stringify({
+        type: 'connected',
+        content: {
+          url: location.href,
+          ua: navigator.userAgent
+        }
+      }))
+    } else if (res.type === 'mutation') {
+      const content = res.content;
+      isMutation = true;
+      if (content.type === 'attributes') {
+        const path = content.path;
+        const dom = getNodeByPath(path);
+        dom.setAttribute(content.attributeName, content.newValue);
+      } else if (content.type === 'characterData') {
+        const path = content.path;
+        const dom = getNodeByPath(path);
+        dom.nodeValue = content.newValue;
+      }
+      setTimeout(() => {
+        isMutation = false;
+      }, 3000)
     }
   })
 }
@@ -102,6 +147,7 @@ const updateHtml = debounce(() => {
   }))
 }, 300)
 const mutationObserver = new MutationObserver((mutations, observer) => {
+  if (isMutation) return;
   html = document.documentElement.outerHTML
   updateHtml();
 });
