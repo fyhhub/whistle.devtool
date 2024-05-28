@@ -52,3 +52,7 @@ juejin.cn disable://cache
 ![BE20240526221329.png](https://raw.githubusercontent.com/fyhhub/imgs/main/QQ%E6%88%AA%E5%9B%BE20240526221329.png)
 
 ![BE20240526221216.png](https://raw.githubusercontent.com/fyhhub/imgs/main/QQ%E6%88%AA%E5%9B%BE20240526221216.png)
+
+
+## 修改样式和文字
+你可以直接使用Chrome DevTool的Element面板来修改样式和文字
