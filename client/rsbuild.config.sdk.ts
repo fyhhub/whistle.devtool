@@ -9,9 +9,9 @@ const rsbuildPlugin = () => ({
       const content = fs.readFileSync(sdkPath).toString();
       if (isFirstCompile) {
         fs.writeFileSync(path.resolve(__dirname, '../_values.txt'), JSON.stringify({
-          'whistle.devtool/sdk.js': content
+          'whistle.devtool/sdk.js': `<script type=text/javascript>${content}</script>`
         }));
-        fs.writeFileSync(path.resolve(__dirname, '../_rules.txt'), `* jsPrepend://{whistle.devtool/sdk.js} enable://strictHtml`)
+        fs.writeFileSync(path.resolve(__dirname, '../_rules.txt'), `* htmlPrepend://{whistle.devtool/sdk.js} enable://strictHtml`)
       }
     });
   },

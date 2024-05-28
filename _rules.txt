@@ -1,1 +1,1 @@
-* jsPrepend://{whistle.devtool/sdk.js} enable://strictHtml
+* htmlPrepend://{whistle.devtool/sdk.js} enable://strictHtml

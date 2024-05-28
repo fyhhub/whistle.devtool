@@ -2,6 +2,9 @@
 
 const styleSet = new Set();
 const linkSet = new Set()
+
+const styleList: HTMLStyleElement[] = [];
+const linkList: HTMLLinkElement[] = [];
 let bodyHTML = '';
 function extractCSS(htmlString: string) {
   // 创建一个新的DOMParser实例
@@ -56,6 +59,8 @@ export class PreviewDevTool {
     if (res.tag === 'html') {
       styleSet.clear()
       linkSet.clear()
+      linkList.forEach(link => link.remove())
+      styleList.forEach(style => style.remove())
     }
     const [styles, body]: any = extractCSS(res.content);
     styles.forEach((item: any) => {
@@ -63,10 +68,12 @@ export class PreviewDevTool {
         const link = document.createElement('link')
         link.setAttribute('rel', 'stylesheet')
         link.setAttribute('href', item.content)
+        linkList.push(link)
         document.head.appendChild(link)
       } else {
         const style = document.createElement('style')
         style.innerHTML = item.content;
+        styleList.push(style)
         document.head.appendChild(style)
       }
     })

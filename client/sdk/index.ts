@@ -26,7 +26,6 @@ function reriteConsole(cb) {
   });
   win.__whistleRewriteConsole = true;
 }
-
 function debounce(fn, wait) {
   var timer;
   return function () {
@@ -38,9 +37,6 @@ function debounce(fn, wait) {
     }, wait);
   };
 }
-
-
-// websocket相关
 const ws = new WebSocket('wss://local.whistlejs.com/whistle.devtool?from=sdk');
 ws.onopen = () => {
   console.log('Connected to server');
@@ -76,7 +72,6 @@ ws.onmessage = (message) => {
   })
 }
 
-
 // 重写console
 reriteConsole((method, args) => {
   if (ws.readyState === ws.OPEN) {
@@ -87,7 +82,6 @@ reriteConsole((method, args) => {
         args
       }]
     }))
-
   }
 })
 
