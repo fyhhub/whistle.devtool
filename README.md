@@ -55,4 +55,4 @@ juejin.cn disable://cache
 
 
 ## 修改样式和文字
-你可以直接使用Chrome DevTool的Element面板来修改样式和文字
+你可以直接使用Chrome DevTool的Element面板来 修改样式和文字、新增节点、删除节点，会实时同步到你的移动端webview
