@@ -31,7 +31,7 @@ if (w2) {
       for (var key in records) {
         body.push(`<div style="margin-bottom: 4px;border-bottom: 1px solid #ddd;display: flex;justify-content: space-between">
             <span style="white-space: nowrap;">${records[key].shareDate}</span>
-            <a style="max-width: 300px;word-wrap:break-word;" href="http://${serverInfo.ipv4[0] + ':8899'}/plugin.devtool/index.html?shareId=${key}" target="_blank">${records[key].url}</a>
+            <a style="max-width: 300px;word-wrap:break-word;" href="http://${serverInfo.ipv4[0] + ':' + serverInfo.port}/plugin.devtool/index.html?shareId=${key}" target="_blank">${records[key].url}</a>
             <span style="white-space: nowrap;cursor: pointer" onclick="copyLink" data-link=${JSON.stringify(key)}>复制链接</span>
             <span style="white-space: nowrap;cursor: pointer" onclick="deleteShare" data-v-shareid=${JSON.stringify(key)}>删除</span>
           </div><br/>`)
@@ -61,7 +61,7 @@ if (w2) {
           },
           copyLink(e) {
             const ip = serverInfo.ipv4[0];
-            copy('http://' + ip + ':8899/plugin.devtool/index.html?shareId=' + e.target.dataset.link)
+            copy('http://' + ip + ':' + serverInfo.port + '/plugin.devtool/index.html?shareId=' + e.target.dataset.link)
           }
         }
       });
