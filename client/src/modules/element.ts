@@ -9,13 +9,6 @@ export class ElementDevTool {
     this.observer = undefined;
   }
   observe() {
-    const changesCache = {
-        attributes: [] as any[],
-        addedNodes: [] as any[],
-        removedNodes: [] as any[],
-        characterData: [] as any[]
-    };
-
     const sendMutation = (data: any) => {
       this.ws.send(JSON.stringify({
         type: 'mutation',
@@ -34,36 +27,28 @@ export class ElementDevTool {
                     oldValue: mutation.oldValue,
                     newValue: mutation.target.getAttribute(mutation.attributeName)
                 };
-                changesCache.attributes.push(attributeChange);
                 sendMutation(attributeChange);
                 console.log(`Attribute ${mutation.attributeName} was modified.`);
                 console.log('Change:', attributeChange);
             } else if (mutation.type === 'childList') {
                 if (mutation.addedNodes.length > 0) {
-                    mutation.addedNodes.forEach((node: any) => {
-                        if (node.nodeType === 1) { // 确保节点是元素节点
-                            const addedNodeChange = {
-                                path: this.getPathTo(node),
-                                node
-                            };
-                            changesCache.addedNodes.push(addedNodeChange);
-                            console.log('Node added:', node);
-                            console.log('Path:', addedNodeChange.path);
-                        }
-                    });
+                  mutation.addedNodes.forEach((node: any) => {
+                    sendMutation({
+                      type: 'addedNode',
+                      path: this.getPathTo(mutation.target),
+                      html: mutation.target.innerHTML
+                    })
+                  });
                 }
                 if (mutation.removedNodes.length > 0) {
-                    mutation.removedNodes.forEach((node: any) => {
-                        if (node.nodeType === 1) { // 确保节点是元素节点
-                            const removedNodeChange = {
-                                path: this.getPathTo(node),
-                                node
-                            };
-                            changesCache.removedNodes.push(removedNodeChange);
-                            console.log('Node removed:', node);
-                            console.log('Path:', removedNodeChange.path);
-                        }
-                    });
+                  console.log('Removed:', mutation);
+                  mutation.removedNodes.forEach((node: any) => {
+                    sendMutation({
+                      type: 'removedNode',
+                      path: this.getPathTo(mutation.target),
+                      html: mutation.target.innerHTML
+                    })
+                  });
                 }
             } else if (mutation.type === 'characterData') {
                 const characterDataChange = {
@@ -72,7 +57,6 @@ export class ElementDevTool {
                     oldValue: mutation.oldValue,
                     newValue: mutation.target.data
                 };
-                changesCache.characterData.push(characterDataChange);
                 sendMutation(characterDataChange);
                 console.log('Character data modified:', mutation.target);
                 console.log('Change:', characterDataChange);

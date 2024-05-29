@@ -109,6 +109,10 @@ ws.onmessage = (message) => {
         const path = content.path;
         const dom = getNodeByPath(path);
         dom.nodeValue = content.newValue;
+      } else if (content.type === 'removedNode' || content.type === 'addedNode') {
+        const path = content.path;
+        const dom = getNodeByPath(path);
+        dom.innerHTML = content.html;
       }
       setTimeout(() => {
         isMutation = false;
